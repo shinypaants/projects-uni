@@ -1,0 +1,320 @@
+<html>
+	<head>
+		<title>Shopping cart system</title>
+		<script>
+		//Variable & Constant Instantiation
+			var productListArr = new Array('Salad Server Set', 'Party Serviette Holder', 
+				'Tea Set', 'Mixing Bowl Set', 'Knife Block Set', 'Coffee Capsule Holder', 
+				'Plastic Sensor Soap Pump', 'Storage Bucket', 'Oven Glove', 'Apron', 
+				'Biscuit Barrel', 'Chopping Board', 'Carioca Cups', 'Soup Bowls', 
+				'Elevate Wood Turner', 'Pasta Machine', 'Teapot', 'Cake Pop Scoop', 
+				'Cookbook Stand', 'Chocolate Station', 'Coffee Maker', 'Pepper Mill', 
+				'Salt Mill', 'Glass Storage Jar', 'Measuring jug', 'Kitchen Scale', 
+				'Tenderiser', 'Pizza Docker', 'Knife Sharpener', 'Steel Cork Opener', 
+				'Steel Garlic Press', 'Steel Can Opener', 
+				'Stainless Steel Crank Flour Sifter', 'Mineral Stone Mortar and Pestle', 
+				'Citrus Cather', 'Cherry & Olive Pitter', 'Multi Grater-Detachable', 
+				'Stainless Steel Colander', 'Steel Pizza Pan', 'Pop Container');
+			var priceListArr = new Array(18.70, 11.95, 39.95, 49.95, 99.95, 29.95, 79.95, 24.95, 
+				9.95, 29.95, 39.95, 12.95, 54.95, 43.00, 19.95, 144.95, 29.95, 9.95, 
+				29.95, 34.95, 29.00, 84.94, 84.95, 4.95, 19.95, 39.95, 34.95, 19.95, 
+				79.95, 36.95, 34.95, 36.95, 33.95, 74.95, 19.95, 27.95, 26.95, 44.95, 
+				12.95, 22.95);
+			var productCode = new Array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+				21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39);
+			var shoppingRecordArr = new Array();
+			var shoppingRecordTemp = new Array();
+			var filteredArray = new Array();
+			var finalFilteredArray = new Array();
+			var table1 = document.getElementById("firstTable");
+			var table2 = document.getElementById("secondTable");
+			
+			/**
+			*showRecords Function
+			*Appends an array to a given table.
+			*@param table, the table that the data from the array is appended to.
+			*@param array, the array contains the information you want to display in the table.
+			*@return the specified table has rows of information appended to it. 
+			*/
+			function showRecords(table, array) {
+				table1 = document.getElementById("firstTable");
+				table2 = document.getElementById("secondTable");
+				for(i=0; i<array.length; i++) {
+					if(i % 5 == 0) {
+						var newRow = table.insertRow();					//loop creates new rows and cells for the table.	
+					}         											//if the cellcount reaches a multiple of 5, 
+					var cell = newRow.insertCell();						//a new row is created.
+					var cellText = document.createTextNode(array[i]);	//the array is then reduced to zero elements,
+					cell.append(cellText);								//to remove duplicates.
+				}
+				while(array.length > 0) {
+					array.pop();
+				}
+				
+			}
+			/**
+			*addRecord Function
+			*Takes user inputs from the HTML objects in the body and pushes them to an array.
+			*does not require any parameters as all the data is extracted from the various user inputs.
+			*@return an array that has one row of information from the user.
+			*@return a second array that contains every row of information from the user.
+			*/
+			function addRecord() {
+				var code = document.getElementById("code").value;
+				var name = productListArr[code];
+				var price = priceListArr[code].toFixed(2);
+				var quantity = parseInt(document.getElementById("quantity").value);
+				var shippingMethod = ""
+				var pickUp = document.getElementById("shipMthd1");					//data from the user is gathered through id reference
+				var delivery = document.getElementById("shipMthd2");				//and indexing into the constant arrays.
+				var valididtyCheck = isValidQuantity(quantity);						//checks for valiud quantity by function call
+				table1 = document.getElementById("firstTable");						//the function then determines which shippingMethod has been chosen
+				table2 = document.getElementById("secondTable"); 					//and if valid is appropriate appends information to a temp array,
+				if(pickUp.checked==true) {											//as well as the global shopping record array.
+					shippingMethod = pickUp.value;
+				}else{                                                   
+					shippingMethod = delivery.value;
+				}
+				if(valididtyCheck == true) {
+					shoppingRecordTemp.push(code, name, price, quantity, shippingMethod); 
+					shoppingRecordArr = shoppingRecordArr.concat(shoppingRecordTemp);
+					showRecords(table1, shoppingRecordTemp);
+				}else{
+					return;
+				}
+			}
+			/**
+			*isValidQuantity Function
+			*Checks if the given quantity is in the range of 0-99.
+			*@param quantity, an integer value that is provided by the user in the addRecord Function.
+			*@return false, if the quantity is less than 0 or more than 99, otherwise returns true.
+			*/
+			function isValidQuantity(quantity) {
+				if(quantity < 0 || quantity > 99) {
+					alert("This amount is invalid! Please enter a new value between 0 and 99."); 					
+					return false;																 //
+				}else{																			 
+					return true;
+				}
+			}
+			/**
+			*totalCost Function
+			*Generates the total cost of the items in the given array.
+			*@param array, contains the products that you want to generate a total cost for.
+			*@param ID, is the ID that references an appropriate textbox in the HTML body.
+			*@return a number that is the price of all of the products.
+			*/
+			function totalCost(array, ID) {
+				var tempPrice = 0;
+				var totalPrice = 0;
+				var deliveryFee = 1.1;
+				var tablePrices = new Array();                       
+				var tableQuantity = new Array();
+				var tableShippingMethod = new Array();
+				var finalBox = document.getElementById(string);
+				for(var j=2; j<array.length; j++) {
+					tablePrices.push(array[j]);
+					j+=4;
+				}
+				for(var x=3; x<array.length; x++) {
+					tableQuantity.push(array[x]);       
+					x+=4;											
+				}
+				for(var z=4; z<array.length; z++) {
+					tableShippingMethod.push(array[z]);
+					z+=4;
+				}
+				for(var m=0; m<tablePrices.length; m++) {
+					tempPrice = tablePrices[m] * tableQuantity[m];
+					if(tableShippingMethod[m] == "Delivery") {     
+						tempPrice *= deliveryFee;				   
+					}
+				totalPrice += tempPrice;
+				}
+				totalPrice = Math.round(totalPrice*100)/100;
+				finalBox.value = totalPrice.toFixed(2);
+			}
+			/**
+			*searchRecord Function
+			*Splits the array into rows, searches through thw rows looking for the target,
+			*if found the row is appended to a new array.
+			*@param array, the array you wish to search through.
+			*@param targetValue, the target you are looking for inside the array. 
+			*@return an array that contains the filtered results from the search.
+			*/
+			function searchRecord(array, targetValue) {
+				var slicedArray = new Array();
+				var targetValue = document.getElementById("target").value;
+				var splitSlicedArray = new Array();
+				var stringCount = targetValue.length;
+				while(table2.rows.length > 1) {
+					table2.deleteRow(-1);
+				}
+				for(i=0; i<shoppingRecordArr.length;i++) {
+					slicedArray.push(shoppingRecordArr[i]);
+					slicedArray.push(shoppingRecordArr[i+1]);
+					slicedArray.push(shoppingRecordArr[i+2]);
+					slicedArray.push(shoppingRecordArr[i+3]);
+					slicedArray.push(shoppingRecordArr[i+4]);
+					for(var t=0;t<slicedArray.length;t++) {
+						var objectToString = slicedArray[t].toString();
+						var splitStringArray = objectToString.split(" ");
+						splitSlicedArray = splitSlicedArray.concat(splitStringArray);
+					}
+					for(var k=0; k<splitSlicedArray.length; k++) {
+						if(splitSlicedArray[k].includes(targetValue)) {
+							filteredArray = filteredArray.concat(slicedArray);
+							while(splitSlicedArray.length > 0) {
+								splitSlicedArray.pop();
+							}
+						}
+						if(stringCount == 0) {
+							alert("Invalid, please enter a keyword/phrase.");
+							return;
+						}
+						
+					}
+					while(slicedArray.length > 0) {
+						slicedArray.pop();
+					}
+				
+				i+=4;
+				}
+				sortRecords(filteredArray);	
+			}
+			/**
+			*sortRecords Function
+			*Sorts an array based on product code.
+			*@param array, the array that you want sorted.
+			*@return the same array however the rows of information has been sorted by product code.
+			*/
+			function sortRecords(array) {
+				var temp;
+				var checked = false;
+				for(i=0;i<array.length;i++) {
+					for(j=0; j<array.length; j++) {
+						if(parseInt(array[j]) > parseInt(array[j+5])) {
+							temp = array[j]
+							array[j] = array[j+5]
+							array[j+5] = temp;
+							temp = array[j+1];
+							array[j+1] = array[j+6];
+							array[j+6] = temp;
+							temp = array[j+2];
+							array[j+2] = array[j+7];
+							array[j+7] = temp;
+							temp = array[j+3];
+							array[j+3] = array[j+8];
+							array[j+8] = temp;
+							temp = array[j+4];
+							array[j+4] = array[j+9];
+							array[j+9] = temp;
+							checked = true;
+						}
+						if(checked == true) {
+							j-=1;
+							checked = false;
+						}else{
+							j+=4;
+						}
+					}
+					i+=4;
+				}
+				while(finalFilteredArray.length > 0) {
+					finalFilteredArray.pop();
+				}
+				finalFilteredArray = finalFilteredArray.concat(array);
+				showRecords(table2, array);
+			}	
+		</script>
+	</head>
+	
+	<body>
+		<form onsubmit="return false">
+			Product Code<select id="code">
+						<option value="0">0</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+						<option value="7">7</option>
+						<option value="8">8</option>
+						<option value="9">9</option>
+						<option value="10">10</option>
+						<option value="11">11</option>
+						<option value="12">12</option>
+						<option value="13">13</option>
+						<option value="14">14</option>
+						<option value="15">15</option>
+						<option value="16">16</option>
+						<option value="17">17</option>
+						<option value="18">18</option>
+						<option value="19">19</option>
+						<option value="20">20</option>
+						<option value="21">21</option>
+						<option value="22">22</option>
+						<option value="23">23</option>
+						<option value="24">24</option>
+						<option value="25">25</option>
+						<option value="26">26</option>
+						<option value="27">27</option>
+						<option value="28">28</option>
+						<option value="29">29</option>
+						<option value="30">30</option>
+						<option value="31">31</option>
+						<option value="32">32</option>
+						<option value="33">33</option>
+						<option value="34">34</option>
+						<option value="35">35</option>
+						<option value="36">36</option>
+						<option value="37">37</option>
+						<option value="38">38</option>
+						<option value="39">39</option>
+						</select>
+						
+			Quantity<input id="quantity" type="text" value="0"/>
+			<br/>
+			
+			
+			Shipping method<input id="shipMthd1" name="grp1" type ="radio"
+							value="Pick-up">Pick-up</input>
+							<input id="shipMthd2" name="grp1" type ="radio"
+							value="Delivery">Delivery</input>
+			<br/>
+			
+			<input type="button" value="Add shopping record" onclick="return addRecord()"/>
+			<hr>		   
+		</form>
+		<table border=1 id="firstTable">
+			<tr>
+				<td>Code</td>
+				<td>Product</td>
+				<td>Price</td>
+				<td>Quantity</td>
+				<td>Shipping method</td>
+			</tr>
+		</table>
+		<form onsubmit="return false">
+			<input type="button" size="5" value="Total Cost" onclick="return totalCost(shoppingRecordArr, 'textBox')"/>
+			<input id="textBox" type="text" value="0.00" readonly/>
+			<hr>
+			<input type="button" size="5" value="Search" onclick="return searchRecord(shoppingRecordArr, 'target')"/>
+			<input id="target" type="text" value=""/>
+		</form>
+		<table border=1 id="secondTable">
+			<tr>
+				<td>Code</td>
+				<td>Product</td>
+				<td>Price</td>
+				<td>Quantity</td>
+				<td>Shipping method</td>
+			</tr>
+		</table>
+		<form onsubmit="return false">
+			<input type="button" size="5" value="Total Cost" onclick="return totalCost(finalFilteredArray, 'secondTextBox')"/>
+			<input id="secondTextBox" type="text" value="0.00" readonly/>
+		</form>
+	</body>
+</html>
